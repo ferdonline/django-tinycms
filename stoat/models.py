@@ -38,7 +38,9 @@ class Page(MP_Node):
     template = models.CharField(max_length=100, choices=TEMPLATES,
                                 default=settings.STOAT_DEFAULT_TEMPLATE)
     url = models.CharField(max_length=255, blank=True, unique=True)
-    show_in_nav = models.BooleanField(default=False)
+    show_in_nav  = models.BooleanField(default=False)
+    show_in_menu = models.ForeignKey( 'Menu', null=True, blank=True, default=None )
+    menu_index   = models.IntegerField( null=True, blank=True, default=None )
 
     class Meta:
         pass
@@ -50,12 +52,12 @@ class Page(MP_Node):
     def full_url(self):
         """Return the full URL of this page, taking ancestors into account."""
 
-        url = '/' + '/'.join(p.slug for p in list(self.get_ancestors()) + [self] if p.slug)
+        url = '/'.join(p.slug for p in list(self.get_ancestors()) + [self] if p.slug)
 
         # Make sure the URL ends with a slash, as god intended.
         # This little endswith dance is done to handle the root url ('/') correctly.
-        if not url.endswith('/'):
-            url = url + '/'
+        if not url.endswith('.html'):
+            url = url + '.html'
 
         return url
 
@@ -212,6 +214,35 @@ class PageContent(models.Model):
             return FileObject(os.path.join(settings.MEDIA_ROOT, self.content))
         else:
             return self.content
+
+
+class Menu( models.Model ):
+    name = models.CharField( max_length=40 )
+    
+    def __unicode__(self):
+        return self.name
+    
+    def get_as_list(self):
+        from django.utils.safestring import mark_safe
+        out = "<ul>\n"
+        for page in self.page_set.all().order_by('menu_index'):
+            out += '<li> <a href="'+ page.url +'">' + page.title.capitalize() + '</a></li>\n'
+        for link in self.staticlink_set.all().order_by('menu_index'):
+            out += '<li> <a href="'+ link.url +'">' + link.title.capitalize() + '</a></li>\n'
+        out += "</ul>"
+        return mark_safe(out)
+    
+    as_list = property( get_as_list )
+
+
+class StaticLink( models.Model ):
+    title = models.CharField(max_length=40)
+    url = models.CharField(max_length=100, blank=True)
+    show_in_menu = models.ForeignKey( Menu, null=True, blank=True, default=None )
+    menu_index   = models.IntegerField( null=True, blank=True, default=None )
+    
+    def __unicode__(self):
+        return self.title
 
 
 def clean_content(sender, instance, **kwargs):

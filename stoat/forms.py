@@ -26,10 +26,10 @@ def _get_field(typ, title, options):
         return forms.URLField(label=title, required=required, verify_exists=False, help_text=help_text)
 
     if typ == 'ckeditor':
-        from ckeditor.widgets import CKEditor
+        from ckeditor.widgets import CKEditorWidget
 
-        config = options.get('config', 'default')
-        return forms.CharField(widget=CKEditor(ckeditor_config=config),
+        #config = options.get('config', 'default')
+        return forms.CharField(widget=CKEditorWidget(),
                                label=title, required=required, help_text=help_text)
 
     if typ == 'email':

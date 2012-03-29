@@ -18,14 +18,14 @@ from django.views.decorators.csrf import csrf_protect
 
 import forms as stoat_forms
 import stemplates
-from models import Page, PageContent, clean_field_title
+from models import Page, PageContent, Menu, StaticLink, clean_field_title
 from views import move_page
 
 csrf_protect_m = method_decorator(csrf_protect)
 # }}}
 
 # Settings {{{
-PAGE_FIELDS = ['title', 'slug', 'template',]
+PAGE_FIELDS = ['title', 'slug', 'template', 'show_in_menu', 'menu_index']
 if not getattr(settings, 'STOAT_HIDE_NAVIGATION', False):
     PAGE_FIELDS.append('show_in_nav')
 
@@ -323,11 +323,14 @@ class PageAdmin(admin.ModelAdmin):
 
     class Media:
         css = {
-            'all': ('stoat.css',) + getattr(settings, 'STOAT_ADMIN_EXTRA_CSS', ()),
+            'all': ('stoat/stoat.css',) + getattr(settings, 'STOAT_ADMIN_EXTRA_CSS', ()),
         }
-        js = ('stoat.js',) + getattr(settings, 'STOAT_ADMIN_EXTRA_JS', ())
-admin.site.register(Page, PageAdmin)
+        js = ('stoat/stoat.js',) + getattr(settings, 'STOAT_ADMIN_EXTRA_JS', ())
 
+#Register it
+admin.site.register(Page, PageAdmin)
+admin.site.register( Menu )
+admin.site.register( StaticLink )
 
 class PageContentAdmin(admin.ModelAdmin):
     list_display = ('title', 'typ', 'page', 'content')

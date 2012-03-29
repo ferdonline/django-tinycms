@@ -6,29 +6,32 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 
 from forms import MovePageForm
-from models import Page
+from models import Page, Menu
 from stemplates import get_path
 # }}}
 
-
 def page(request, url):
-    if not url.startswith('/'):
-        url = "/" + url
+    #if not url.startswith('/'):  #damn absolute urls!
+    #    url = "/" + url
+    if url.startswith('/'):
+        url = url[1:]
     try:
         p = get_object_or_404(Page, url__exact=url)
     except Http404:
-        if not url.endswith('/') and settings.APPEND_SLASH:
-            new_url = url + "/"
-            get_object_or_404(Page, url__exact=new_url)
-            return HttpResponsePermanentRedirect("%s/" % request.path)
-        else:
-            raise
+        #if not url.endswith('.html'): #and settings.APPEND_SLASH:
+        #    new_url = url + ".html"
+        #    get_object_or_404(Page, url__exact=new_url)
+        #    return HttpResponsePermanentRedirect("%s/" % request.path)
+        #else:
+        raise
     return render_page(request, p)
 
 @csrf_protect
 def render_page(request, p):
     return render_to_response(get_path(p.template), {
         'page': p,
+        'all_menus': Menu.objects.all(),
+        'page_menu_index': p.menu_index,
     }, context_instance=RequestContext(request))
 
 
