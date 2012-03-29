@@ -26,6 +26,7 @@ CONTENT_TYPES = (
     ('text', 'text'),
     ('ckeditor', 'ckeditor'),
     ('img', 'img'),
+    ('file', 'file'),
     ('fk', 'fk'),
     ('int', 'int'),)
 TEMPLATES = sorted([(name, name) for name in settings.STOAT_TEMPLATES.keys()])
@@ -104,6 +105,9 @@ class Page(MP_Node):
         return self.fields()
 
 
+    def parent(self):
+        return self.get_parent()
+
     def get_absolute_url(self):
         return self.url
 
@@ -120,7 +124,7 @@ class Page(MP_Node):
     def nav_children(self):
         """Return a list of child Page objects."""
         return list(self.get_children().filter(show_in_nav=True))
-        
+
     def nav_next_sibling(self):
         """ Return the next sibling object, or None if it was the rightmost sibling."""
         siblings = self.nav_siblings()
@@ -128,8 +132,8 @@ class Page(MP_Node):
         for i, sibling in enumerate(siblings):
             if sibling == self and i < len(siblings) - 1:
                 next_sibling = siblings[i+1]
-        return next_sibling   
-        
+        return next_sibling
+
     def nav_prev_sibling(self):
         """ Return the previous sibling object, or None if it was the leftmost sibling."""
         siblings = self.nav_siblings()
@@ -137,7 +141,7 @@ class Page(MP_Node):
         for i, sibling in enumerate(siblings):
             if sibling == self and i > 0:
                 prev_sibling = siblings[i-1]
-        return prev_sibling 
+        return prev_sibling
 
     def nav_siblings_and_children(self):
         """Return a nested list of sibling/children Page objects (including this page)."""
@@ -196,7 +200,16 @@ class PageContent(models.Model):
             except model.DoesNotExist:
                 return None
         elif self.typ == 'bool':
-            return True if int(self.content) else False
+            try:
+                result = True if int(self.content) else False
+            except ValueError:
+                result = True
+            return result
+        elif self.typ in ['file', 'img']:
+            from filebrowser.base import FileObject
+            from django.conf import settings
+            import os
+            return FileObject(os.path.join(settings.MEDIA_ROOT, self.content))
         else:
             return self.content
 

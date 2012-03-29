@@ -154,6 +154,11 @@ The following options can be used for any field.
 Ensures that this field is not left blank when editing the page in the admin
 interface.
 
+``help_text``
+~~~~~~~~~~~~
+
+Defines help text for individual fields.
+
 Further Usage
 -------------
 

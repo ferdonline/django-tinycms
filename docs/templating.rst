@@ -23,6 +23,11 @@ The title of the page as defined in the admin interface.
 
 A normal Django ``get_absolute_url`` method that will return the page's URL.
 
+``page.parent``
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The page's parent.
+
 ``page.fields``
 ~~~~~~~~~~~~~~~
 

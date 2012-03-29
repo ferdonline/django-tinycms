@@ -263,9 +263,12 @@ class PageAdmin(admin.ModelAdmin):
             for pc in page.pagecontent_set.all():
                 # Ugly hack to store booleans as text.
                 if pc.typ == 'bool':
-                    val = True if int(pc.content) else False
+                    try:
+                        val = True if int(pc.content) else False
+                    except ValueError:
+                        val = True
                 else:
-                    val = pc.content
+                    val = pc.get_content()
 
                 initial['content_' + clean_field_title(pc.title)] = val
 

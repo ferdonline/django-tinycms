@@ -11,37 +11,38 @@ class PageContentForm(forms.Form):
 def _get_field(typ, title, options):
     typ = typ.lower()
     required = options.get('required', False)
+    help_text = options.get('help_text')
 
     if typ == 'char':
-        return forms.CharField(max_length=140, label=title, required=required)
+        return forms.CharField(max_length=140, label=title, required=required, help_text=help_text)
 
     if typ == 'text':
-        return forms.CharField(widget=forms.Textarea(), label=title, required=required)
+        return forms.CharField(widget=forms.Textarea(), label=title, required=required, help_text=help_text)
 
     if typ == 'int':
-        return forms.IntegerField(label=title, required=required)
+        return forms.IntegerField(label=title, required=required, help_text=help_text)
 
     if typ == 'url':
-        return forms.URLField(label=title, required=required, verify_exists=False)
+        return forms.URLField(label=title, required=required, verify_exists=False, help_text=help_text)
 
     if typ == 'ckeditor':
         from ckeditor.widgets import CKEditor
 
         config = options.get('config', 'default')
         return forms.CharField(widget=CKEditor(ckeditor_config=config),
-                               label=title, required=required)
+                               label=title, required=required, help_text=help_text)
 
     if typ == 'email':
-        return forms.EmailField(label=title, required=required)
+        return forms.EmailField(label=title, required=required, help_text=help_text)
 
     if typ == 'bool':
-        return forms.BooleanField(label=title, required=required)
+        return forms.BooleanField(label=title, required=required, help_text=help_text)
 
     if typ == 'float':
-        return forms.FloatField(label=title, required=required)
+        return forms.FloatField(label=title, required=required, help_text=help_text)
 
     if typ == 'decimal':
-        return forms.DecimalField(label=title, required=required)
+        return forms.DecimalField(label=title, required=required, help_text=help_text)
 
     if typ == 'img':
         from filebrowser.fields import FileBrowseFormField, FileBrowseWidget
@@ -49,14 +50,24 @@ def _get_field(typ, title, options):
         attrs = { 'directory': '', 'extensions': '', 'format': 'Image', }
 
         return FileBrowseFormField(format='Image', label=title, required=required,
-                                   widget=FileBrowseWidget(attrs=attrs))
+                                   widget=FileBrowseWidget(attrs=attrs), help_text=help_text)
+
+    if typ == 'file':
+        from filebrowser.fields import FileBrowseFormField, FileBrowseWidget
+
+        fmat = options.get('format', 'File')
+        attrs = { 'directory': '', 'extensions': '', 'format': fmat, }
+
+        return FileBrowseFormField(format=fmat, label=title, required=required,
+                                   widget=FileBrowseWidget(attrs=attrs),
+                                   help_text=help_text)
 
     if typ == 'fk':
         app_label = options.get('app', 'stoat')
         model_name = options.get('model', 'Page')
         model = get_model(app_label, model_name)
 
-        return forms.ModelChoiceField(model.objects.all(), label=title, required=required)
+        return forms.ModelChoiceField(model.objects.all(), label=title, required=required, help_text=help_text)
 
     if typ == 'inline':
         return None
