@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 install_requires = ['django-treebeard', 'django-templatetag-sugar']
 
@@ -14,5 +14,6 @@ setup(
     author='Steve Losh',
     author_email='steve@stevelosh.com',
     url='http://bitbucket.org/sjl/stoat/',
-    packages=['stoat'],
+    packages=find_packages(),
+    include_package_data=True,
 )
