@@ -34,9 +34,9 @@ grappelli.initTableElements = function() {;};
 
             $(this).prepend('<div class="drop drop-inside"><div class="indent">' + indent + '</div><div class="child">↳</div></div>');
         });
-        $('.drag-handle').draggable({
+        $('.drag-handle').parent().draggable({
             containment: 'table',
-            revert: 'invalid',
+            revert: 'invalid'
         });
 
         var droppable_options = {

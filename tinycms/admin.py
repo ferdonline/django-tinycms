@@ -26,11 +26,11 @@ csrf_protect_m = method_decorator(csrf_protect)
 
 # Settings {{{
 PAGE_FIELDS = ['title', 'slug', 'template', 'show_in_menu', 'menu_index']
-if not getattr(settings, 'STOAT_HIDE_NAVIGATION', False):
+if not getattr(settings, 'TINYCMS_HIDE_NAVIGATION', True):
     PAGE_FIELDS.append('show_in_nav')
 
 PAGE_COLS = ['indented_title', 'url']
-if getattr(settings, 'STOAT_DEBUG', False):
+if getattr(settings, 'TINYCMS_DEBUG', False):
     PAGE_COLS.append('template')
 # }}}
 
@@ -256,7 +256,6 @@ class PageAdmin(admin.ModelAdmin):
 
         if request.POST:
             template = request.POST.get('template', page.template)
-
             content_form = stoat_forms.get_content_form(template, request.POST)
         else:
             initial = {}
@@ -323,12 +322,12 @@ class PageAdmin(admin.ModelAdmin):
 
     class Media:
         css = {
-            'all': ('stoat/stoat.css',) + getattr(settings, 'STOAT_ADMIN_EXTRA_CSS', ()),
+            'all': ('stoat/stoat.css',) + getattr(settings, 'TINYCMS_ADMIN_EXTRA_CSS', ()),
         }
-        js = ('stoat/stoat.js',) + getattr(settings, 'STOAT_ADMIN_EXTRA_JS', ())
+        js = ('stoat/stoat.js',) + getattr(settings, 'TINYCMS_ADMIN_EXTRA_JS', ())
 
 #Register it
-admin.site.register(Page, PageAdmin)
+admin.site.register( Page, PageAdmin )
 admin.site.register( Menu )
 admin.site.register( StaticLink )
 
@@ -337,6 +336,6 @@ class PageContentAdmin(admin.ModelAdmin):
     list_filter = ('page', 'typ')
 
 
-if getattr(settings, 'STOAT_DEBUG', False):
+if getattr(settings, 'TINYCMS_DEBUG', False):
     admin.site.register(PageContent, PageContentAdmin)
 

@@ -63,7 +63,7 @@ def _get_field(typ, title, options):
                                    help_text=help_text)
 
     if typ == 'fk':
-        app_label = options.get('app', 'stoat')
+        app_label = options.get('app', 'tinycms')
         model_name = options.get('model', 'Page')
         model = get_model(app_label, model_name)
 

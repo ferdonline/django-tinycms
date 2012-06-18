@@ -1,6 +1,6 @@
 # {{{
 from django.conf import settings
-from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseBadRequest
+from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
@@ -11,19 +11,10 @@ from stemplates import get_path
 # }}}
 
 def page(request, url):
-    #if not url.startswith('/'):  #damn absolute urls!
-    #    url = "/" + url
     if url.startswith('/'):
         url = url[1:]
-    try:
-        p = get_object_or_404(Page, url__exact=url)
-    except Http404:
-        #if not url.endswith('.html'): #and settings.APPEND_SLASH:
-        #    new_url = url + ".html"
-        #    get_object_or_404(Page, url__exact=new_url)
-        #    return HttpResponsePermanentRedirect("%s/" % request.path)
-        #else:
-        raise
+    
+    p = get_object_or_404(Page, url__exact=url )    
     return render_page(request, p)
 
 @csrf_protect
@@ -58,5 +49,5 @@ def move_page(request):
         page.save()
 
     # TODO: Make this dynamic.
-    return HttpResponsePermanentRedirect('/admin/stoat/page/')
+    return HttpResponsePermanentRedirect('/admin/tinycms/page/')
 

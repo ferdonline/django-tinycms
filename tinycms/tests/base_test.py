@@ -6,8 +6,8 @@ class StoatTestCase(TestCase):
     urls = 'stoat.tests.urls'
 
     def setUp(self):
-        self.OLD_STOAT_TEMPLATES = getattr(settings, 'STOAT_TEMPLATES')
-        settings.STOAT_TEMPLATES = {
+        self.OLD_TINYCMS_TEMPLATES = getattr(settings, 'TINYCMS_TEMPLATES')
+        settings.TINYCMS_TEMPLATES = {
             'Default': ('stoat/tests/default.html', (
                 ('Body',            'text'),
                 ('Sidebar Heading', 'char'),
@@ -21,8 +21,8 @@ class StoatTestCase(TestCase):
             )),
         }
 
-        self.OLD_STOAT_DEFAULT_TEMPLATE = getattr(settings, 'STOAT_DEFAULT_TEMPLATE')
-        settings.STOAT_DEFAULT_TEMPLATE = 'Default'
+        self.OLD_TINYCMS_DEFAULT_TEMPLATE = getattr(settings, 'TINYCMS_DEFAULT_TEMPLATE')
+        settings.TINYCMS_DEFAULT_TEMPLATE = 'Default'
 
         self.OLD_INSTALLED_APPS = getattr(settings, 'INSTALLED_APPS')
         settings.INSTALLED_APPS = (
@@ -41,8 +41,8 @@ class StoatTestCase(TestCase):
             'stoat.middleware.StoatMiddleware',)
 
     def tearDown(self):
-        settings.STOAT_TEMPLATES = self.OLD_STOAT_TEMPLATES
-        settings.STOAT_DEFAULT_TEMPLATE = self.OLD_STOAT_DEFAULT_TEMPLATE
+        settings.TINYCMS_TEMPLATES = self.OLD_TINYCMS_TEMPLATES
+        settings.TINYCMS_DEFAULT_TEMPLATE = self.OLD_TINYCMS_DEFAULT_TEMPLATE
         settings.INSTALLED_APPS = self.OLD_INSTALLED_APPS
         settings.MIDDLEWARE_CLASSES = self.OLD_MIDDLEWARE_CLASSES
 

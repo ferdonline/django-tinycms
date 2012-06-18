@@ -1,6 +1,11 @@
 {% extends "admin/change_form.html" %}
 {% load i18n admin_modify adminmedia grp_tags %}
 
+{% block object-tools-items %}
+    <li><a href="history/">{% trans "History" %}</a></li>
+    {% if has_absolute_url %}<li><a href="../../../../{{ original.url }}" class="focus" target="_blank">{% trans "View on site" %}</a></li>{% endif%}
+{% endblock %}
+
 {% block content %}
     <div class="container-flexible">
         <div class="form-container">
@@ -27,7 +32,7 @@
                         <h1>Page Content</h1>
 
                         {% for field in content_form %}
-                            {% include "admin/stoat/page_content.html" %}
+                            {% include "admin/tinycms/page_content.html" %}
                         {% endfor %}
 
                         {% for inline_admin_formset in inline_admin_formsets %}

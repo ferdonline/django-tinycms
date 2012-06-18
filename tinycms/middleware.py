@@ -3,7 +3,7 @@ from django.http import Http404
 from views import page
 
 
-class StoatMiddleware(object):
+class TinyCMSMiddleware(object):
     def process_response(self, request, response):
         if response.status_code != 404:
             # Pass anything but a 404 straight through.

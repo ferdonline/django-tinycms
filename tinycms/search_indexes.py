@@ -6,7 +6,7 @@ from django.conf import settings
 
 from models import Page
 
-INDEX_CLASS = getattr(settings, 'STOAT_HAYSTACK_INDEX_CLASS', None)
+INDEX_CLASS = getattr(settings, 'TINYCMS_HAYSTACK_INDEX_CLASS', None)
 if INDEX_CLASS:
     module_name, index_name = INDEX_CLASS.rsplit('.', 1)
     module = __import__(module_name, fromlist=[index_name])

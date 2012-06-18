@@ -81,12 +81,17 @@ div.drop-above.first-child .indent, div.drop-above.first-child .border {
 .changelist-results tbody {
     z-index: 1;
 }
+
 .changelist-results tbody tr th .stoat-row {
     margin: -10px;
     padding: 10px;
     width: 400px;
     position: relative !important;
 }
+.stoat-row.ui-draggable-dragging {
+    background: #ddd;
+}
+
 .changelist-results tbody tr th a {
     z-index: 20;
     position: relative;

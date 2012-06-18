@@ -29,14 +29,14 @@ CONTENT_TYPES = (
     ('file', 'file'),
     ('fk', 'fk'),
     ('int', 'int'),)
-TEMPLATES = sorted([(name, name) for name in settings.STOAT_TEMPLATES.keys()])
+TEMPLATES = sorted([(name, name) for name in settings.TINYCMS_TEMPLATES.keys()])
 
 
 class Page(MP_Node):
-    title = models.CharField(max_length=100, verbose_name='page title')
-    slug = models.SlugField(max_length=100, blank=True)
+    title = models.CharField(max_length=100, verbose_name='Page title')
+    slug = models.SlugField(max_length=100, blank=True, verbose_name = 'Base URL')
     template = models.CharField(max_length=100, choices=TEMPLATES,
-                                default=settings.STOAT_DEFAULT_TEMPLATE)
+                                default=settings.TINYCMS_DEFAULT_TEMPLATE)
     url = models.CharField(max_length=255, blank=True, unique=True)
     show_in_nav  = models.BooleanField(default=False)
     show_in_menu = models.ForeignKey( 'Menu', null=True, blank=True, default=None )
@@ -77,7 +77,7 @@ class Page(MP_Node):
 
         if not skip_cache_clear and self.id:
             # Clear this page's ancestor cache.
-            key = 'stoat:pages:%d:children' % (self.id)
+            key = 'tinycms:pages:%d:children' % (self.id)
             cache.delete(key)
 
         # Save the page.
@@ -158,7 +158,7 @@ class Page(MP_Node):
     def _clear_ancestor_caches(self):
         """Clear the child ID caches for all of this page's ancestors."""
         for page in Page.objects.get(id=self.id).get_ancestors():
-            key = 'stoat:pages:%d:children' % (page.id)
+            key = 'tinycms:pages:%d:children' % (page.id)
             cache.delete(key)
 
 
@@ -193,7 +193,7 @@ class PageContent(models.Model):
 
             options = stemplates.get_field(self.page.template, self.title)[2]
 
-            app_label = options.get('app', 'stoat')
+            app_label = options.get('app', 'tinycms')
             model_name = options.get('model', 'Page')
             model = get_model(app_label, model_name)
 
@@ -272,5 +272,5 @@ def clean_content(sender, instance, **kwargs):
         if title not in existing_contents or existing_contents[title] != typ:
             PageContent(page=page, title=title, typ=typ, content='').save()
 
-post_save.connect(clean_content, sender=Page, dispatch_uid='stoat-clean_content')
+post_save.connect(clean_content, sender=Page, dispatch_uid='tinycms-clean_content')
 
